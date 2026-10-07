@@ -1,1 +1,0 @@
-# Website BMKG Gorontalo
