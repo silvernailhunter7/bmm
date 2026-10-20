@@ -22,11 +22,12 @@ $base_url = $is_subpage ? '../' : '';
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
             color: #1e293b;
+            overflow-x: hidden; /* Mencegah scrollbar horizontal yang merusak tampilan */
         }
         .topbar-bmkg {
             background-color: #0f172a;
             color: #94a3b8;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             padding: 6px 0;
         }
         .navbar-juanda {
@@ -36,24 +37,19 @@ $base_url = $is_subpage ? '../' : '';
         }
         .navbar-brand-text .title {
             font-weight: 800;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             color: #0f172a;
             letter-spacing: -0.3px;
             line-height: 1.2;
         }
-        .navbar-brand-text .subtitle {
-            font-size: 0.72rem;
-            color: #0284c7;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
         .nav-link {
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.78rem; /* Ukuran disesuaikan agar muat 1 baris */
             color: #334155 !important;
-            padding: 12px 12px !important;
+            padding: 8px 6px !important; /* Padding dirapatkan agar menu INOVASI tidak terdorong keluar */
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.1px;
+            white-space: nowrap;
             transition: all 0.2s ease;
         }
         .nav-link:hover, .nav-link.active {
@@ -81,54 +77,54 @@ $base_url = $is_subpage ? '../' : '';
         .dropdown-menu {
             border: none;
             box-shadow: 0 10px 25px -5px rgba(0,0,0,0.12);
-            border-radius: 16px;
-            padding: 8px 0;
+            border-radius: 12px;
+            padding: 6px 0;
             border-top: 3px solid #0284c7;
-            font-size: 0.88rem;
+            font-size: 0.82rem;
         }
         .dropdown-item {
             font-weight: 500;
-            padding: 9px 20px;
+            padding: 7px 16px;
             color: #334155;
             transition: all 0.15s ease;
         }
         .dropdown-item:hover {
             background-color: #f0f9ff;
             color: #0284c7;
-            padding-left: 24px;
+            padding-left: 20px;
         }
     </style>
 </head>
 <body>
 
-<!-- TOPBAR CONTACT & TIME -->
+<!-- TOPBAR CONTACT & TIME (MENGGUNAKAN CONTAINER CONTAINER COMPACT) -->
 <div class="topbar-bmkg d-none d-md-block">
-    <div class="container-fluid px-lg-5 d-flex justify-content-between align-items-center">
-        <div>
-            <span><i class="bi bi-envelope-fill text-info me-1"></i> stamet.gorontalo@bmkg.go.id</span>
-            <span><i class="bi bi-envelope-fill text-info me-1"></i> stageof.gorontalo@bmkg.go.id</span>
-            <span><i class="bi bi-envelope-fill text-info me-1"></i> staklim.gorontalo@bmkg.go.id</span>
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3 overflow-hidden text-nowrap me-2">
+            <span class="text-truncate"><i class="bi bi-envelope-fill text-info me-1"></i> stamet.gorontalo@bmkg.go.id</span>
+            <span class="text-truncate"><i class="bi bi-envelope-fill text-info me-1"></i> stageof.gorontalo@bmkg.go.id</span>
+            <span class="text-truncate d-none d-lg-inline"><i class="bi bi-envelope-fill text-info me-1"></i> staklim.gorontalo@bmkg.go.id</span>
         </div>
-        <div>
+        <div class="d-flex align-items-center text-nowrap flex-shrink-0">
             <span class="me-3"><i class="bi bi-clock-fill text-info me-1"></i> <span id="clock-wita">--:--:--</span> WITA</span>
-            <a href="<?= $base_url ?>admin/login.php" class="text-white text-decoration-none bg-primary px-2.5 py-1 rounded small fw-bold">
+            <a href="<?= $base_url ?>admin/login.php" class="btn btn-primary btn-sm rounded-pill px-3 py-1 text-white text-decoration-none fw-bold" style="font-size: 0.72rem; line-height: 1;">
                 <i class="bi bi-lock-fill me-1"></i> Login Admin
             </a>
         </div>
     </div>
 </div>
 
-<!-- MAIN NAVBAR JUANDA STYLE -->
-<nav class="navbar navbar-expand-xl navbar-juanda sticky-top">
-    <div class="container-fluid px-lg-5">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="<?= $base_url ?>index.php">
-            <img src="https://www.bmkg.go.id/asset/img/logo/logo-bmkg.png" alt="Logo BMKG" height="46">
+<!-- MAIN NAVBAR JUANDA STYLE (SEJAJAR PRESISI) -->
+<nav class="navbar navbar-expand-xl navbar-juanda sticky-top py-1.5">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2 py-0" href="<?= $base_url ?>index.php">
+            <img src="https://www.bmkg.go.id/asset/img/logo/logo-bmkg.png" alt="Logo BMKG" height="38">
             <div class="navbar-brand-text">
                 <div class="title">BMKG GORONTALO</div>
             </div>
         </a>
         
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarJuanda">
+        <button class="navbar-toggler border-0 shadow-none px-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarJuanda">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -143,7 +139,7 @@ $base_url = $is_subpage ? '../' : '';
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="<?= $base_url ?>pages/visi.php">Visi dan Misi</a></li>
                         <li><a class="dropdown-item" href="<?= $base_url ?>pages/tugas.php">Tugas dan Fungsi</a></li>
-                        <li><a class="dropdown-item" href="<?= $base_url ?>pages/organisasi.php"">Struktur Organisasi</a></li>
+                        <li><a class="dropdown-item" href="<?= $base_url ?>pages/organisasi.php">Struktur Organisasi</a></li>
                         <li><a class="dropdown-item" href="<?= $base_url ?>pages/sejarah.php">Sejarah</a></li>
                     </ul>
                 </li>
@@ -171,7 +167,14 @@ $base_url = $is_subpage ? '../' : '';
                         <li><a class="dropdown-item" href="<?= $base_url ?>pages/cuaca_harian.php">Cuaca Kab, Kec & Desa</a></li>
                         <li><a class="dropdown-item" href="<?= $base_url ?>pages/cuaca_penerbangan.php">Cuaca Bandara</a></li>
                         <li><a class="dropdown-item" href="<?= $base_url ?>pages/cuaca_pelabuhan.php">Cuaca Maritim</a></li>
-                        <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="<?= $base_url ?>pages/iklim_semester.php">IKLIM </a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">IKLIM</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="<?= $base_url ?>pages/iklim_10.php">IKLIM Dasarian</a></li>
+                        <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="<?= $base_url ?>pages/iklim_semester.php">IKLIM Semester</a></li>
                     </ul>
                 </li>
 
@@ -187,7 +190,7 @@ $base_url = $is_subpage ? '../' : '';
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">PELAYANAN DATA</a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="<?= $base_url ?>pages/ptsp.php">Alur Pelayanan Data (PTSP)</a></li>
-                        <li><a class="dropdown-item" href="#">Permohonan Informasi Cuaca</a></li>
+                        <li><a class="dropdown-item" href="#">Permohonan Informasi MKG</a></li>
                         <li><a class="dropdown-item" href="<?= $base_url ?>pages/pnbp.php">Tarif PNBP Data BMKG</a></li>
                     </ul>
                 </li>
@@ -195,20 +198,28 @@ $base_url = $is_subpage ? '../' : '';
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">PUBLIK</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Survei IKM & IPK</a></li>
-                        <li><a class="dropdown-item" href="#">Hasil IKM dan IPK</a></li>
+                        <li><a class="dropdown-item" href="#">Survei IKM & SKM <i class="bi bi-box-arrow-up-right ms-1 text-muted" style="font-size:0.75rem;"></i></a></li>
+                        <li><a class="dropdown-item" href="#">Hasil IKM dan SKM <i class="bi bi-box-arrow-up-right ms-1 text-muted" style="font-size:0.75rem;"></i></a></li>
                         <li><a class="dropdown-item" href="#">Kritik dan Saran</a></li>
                         <li><a class="dropdown-item" href="#">Pengaduan</a></li>
+                        <li><a class="dropdown-item" href="<?= $base_url ?>pages/transparansi.php">Transparansi</a></li>
                     </ul>
                 </li>
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">PENERBANGAN</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="https://web-aviation.bmkg.go.id/web/metar_speci.php">METAR & TAF <i class="bi bi-box-arrow-up-right ms-2 text-muted" style="font-size:0.75rem;"></i></a></li>
-                        <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="https://web-aviation.bmkg.go.id/maps" target="_blank">Flight Maps <i class="bi bi-box-arrow-up-right ms-2 text-muted" style="font-size:0.75rem;"></i></a></li>
-                        <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="https://aviation.bmkg.go.id" target="_blank">Flight Document <i class="bi bi-box-arrow-up-right ms-2 text-muted" style="font-size:0.75rem;"></i></a></li>
-                        <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="https://inasiam.bmkg.go.id/?zoom=6.48&lat=0.7935&lng=122.5037" target="_blank">INA-SIAM <i class="bi bi-box-arrow-up-right ms-2 text-muted" style="font-size:0.75rem;"></i></a></li>
+                        <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="https://web-aviation.bmkg.go.id/web/metar_speci.php" target="_blank">METAR & TAF <i class="bi bi-box-arrow-up-right ms-1 text-muted" style="font-size:0.75rem;"></i></a></li>
+                        <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="https://web-aviation.bmkg.go.id/maps" target="_blank">Flight Maps <i class="bi bi-box-arrow-up-right ms-1 text-muted" style="font-size:0.75rem;"></i></a></li>
+                        <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="https://aviation.bmkg.go.id" target="_blank">Flight Document <i class="bi bi-box-arrow-up-right ms-1 text-muted" style="font-size:0.75rem;"></i></a></li>
+                        <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="https://inasiam.bmkg.go.id/?zoom=6.48&lat=0.7935&lng=122.5037" target="_blank">INA-SIAM <i class="bi bi-box-arrow-up-right ms-1 text-muted" style="font-size:0.75rem;"></i></a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle pe-0" href="#" role="button" data-bs-toggle="dropdown">INOVASI</a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="https://web-aviation.bmkg.go.id/web/tasss.php" target="_blank">INOVASI <i class="bi bi-box-arrow-up-right ms-1 text-muted" style="font-size:0.75rem;"></i></a></li>
                     </ul>
                 </li>
             </ul>

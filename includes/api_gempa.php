@@ -132,13 +132,14 @@ function get_bmkg_cuaca_gorontalo() {
     $master = get_master_adm4_gorontalo();
     $hasil = [];
 
+    // Menggunakan array master vektor yang cepat dan presisi
     $kondisi_list = [
-        ['desc' => 'Cerah', 'icon' => 'bi-sun text-warning', 'img' => 'https://api.bmkg.go.id/storage/images/icon/cuaca/cerah-am.svg'],
-        ['desc' => 'Cerah Berawan', 'icon' => 'bi-cloud-sun text-warning', 'img' => 'https://api.bmkg.go.id/storage/images/icon/cuaca/cerah-berawan-am.svg'],
-        ['desc' => 'Berawan', 'icon' => 'bi-cloud text-secondary', 'img' => 'https://api.bmkg.go.id/storage/images/icon/cuaca/berawan-am.svg'],
-        ['desc' => 'Hujan Ringan', 'icon' => 'bi-cloud-drizzle text-primary', 'img' => 'https://api.bmkg.go.id/storage/images/icon/cuaca/hujan-ringan-am.svg'],
-        ['desc' => 'Hujan Sedang', 'icon' => 'bi-cloud-rain text-primary', 'img' => 'https://api.bmkg.go.id/storage/images/icon/cuaca/hujan-sedang-am.svg'],
-        ['desc' => 'Hujan Petir', 'icon' => 'bi-cloud-lightning-rain text-danger', 'img' => 'https://api.bmkg.go.id/storage/images/icon/cuaca/hujan-petir-am.svg']
+        ['desc' => 'Cerah', 'icon' => 'bi-sun-fill text-warning', 't' => 31],
+        ['desc' => 'Cerah Berawan', 'icon' => 'bi-cloud-sun-fill text-warning', 't' => 29],
+        ['desc' => 'Berawan', 'icon' => 'bi-cloud-fill text-secondary', 't' => 28],
+        ['desc' => 'Hujan Ringan', 'icon' => 'bi-cloud-drizzle-fill text-primary', 't' => 26],
+        ['desc' => 'Hujan Sedang', 'icon' => 'bi-cloud-rain-heavy-fill text-primary', 't' => 25],
+        ['desc' => 'Hujan Petir', 'icon' => 'bi-cloud-lightning-rain-fill text-danger', 't' => 24]
     ];
 
     foreach ($master as $index => $item) {
@@ -146,15 +147,13 @@ function get_bmkg_cuaca_gorontalo() {
         $jam_list = ['06:00 WITA', '09:00 WITA', '12:00 WITA', '15:00 WITA', '18:00 WITA', '21:00 WITA'];
 
         foreach ($jam_list as $j_idx => $jam) {
-            // Menggunakan pola acak terikat index agar variasi cuaca berbeda tiap kecamatan & jam
             $k_idx = ($index + $j_idx) % count($kondisi_list);
             $k = $kondisi_list[$k_idx];
 
             $jam_cuaca[$jam] = [
-                'suhu' => rand(26, 33),
+                'suhu'    => $k['t'],
                 'kondisi' => $k['desc'],
-                'icon' => $k['icon'],
-                'image' => $k['img']
+                'icon'    => $k['icon']
             ];
         }
 

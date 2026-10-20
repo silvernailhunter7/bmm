@@ -32,7 +32,8 @@ include '../includes/header.php';
                 <h3 class="fw-bold text-dark mb-1">
                     <i class="bi bi-airplane-engines-fill text-primary me-2"></i>Informasi Cuaca Bandara & Penerbangan
                 </h3>
-                <p class="text-muted small mb-0">Rilis visual prakiraan cuaca penerbangan Stasiun Meteorologi Djalaluddin Gorontalo.</p>
+                <p class="text-muted small mb-0">Rilis visual prakiraan cuaca penerbangan.</p>
+                <p class="text-muted small mb-0">Untuk informasi selengkapnya bisa menuju tautan : <a href="<?php echo "https://www.bmkg.go.id/cuaca/bandara"; ?>" target="_blank"><?php echo "BMKG Penerbangan"; ?></a></p>
             </div>
             <a href="cuaca_pelabuhan.php" class="btn btn-outline-info rounded-pill btn-sm px-3">
                 <i class="bi bi-tsunami me-1"></i> Lihat Cuaca Pelabuhan

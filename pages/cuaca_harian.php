@@ -12,12 +12,12 @@ $target_jam = ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '2
 
 // Master Variasi Kondisi Cuaca BMKG Resmi untuk Fallback Dinamis Presisi
 $cuaca_bmkg_master = [
-    ['desc' => 'Cerah', 'icon' => 'bi-sun text-warning', 'img' => 'https://api.bmkg.go.id/storage/images/icon/cuaca/cerah-am.svg', 't' => 31],
-    ['desc' => 'Cerah Berawan', 'icon' => 'bi-cloud-sun text-warning', 'img' => 'https://api.bmkg.go.id/storage/images/icon/cuaca/cerah-berawan-am.svg', 't' => 29],
-    ['desc' => 'Berawan', 'icon' => 'bi-cloud text-secondary', 'img' => 'https://api.bmkg.go.id/storage/images/icon/cuaca/berawan-am.svg', 't' => 28],
-    ['desc' => 'Hujan Ringan', 'icon' => 'bi-cloud-drizzle text-primary', 'img' => 'https://api.bmkg.go.id/storage/images/icon/cuaca/hujan-ringan-am.svg', 't' => 26],
-    ['desc' => 'Hujan Sedang', 'icon' => 'bi-cloud-rain text-primary', 'img' => 'https://api.bmkg.go.id/storage/images/icon/cuaca/hujan-sedang-am.svg', 't' => 25],
-    ['desc' => 'Hujan Petir', 'icon' => 'bi-cloud-lightning-rain text-danger', 'img' => 'https://api.bmkg.go.id/storage/images/icon/cuaca/hujan-petir-am.svg', 't' => 24]
+    ['desc' => 'Cerah', 'icon' => 'bi-sun-fill text-warning', 't' => 31],
+    ['desc' => 'Cerah Berawan', 'icon' => 'bi-cloud-sun-fill text-warning', 't' => 29],
+    ['desc' => 'Berawan', 'icon' => 'bi-cloud-fill text-secondary', 't' => 28],
+    ['desc' => 'Hujan Ringan', 'icon' => 'bi-cloud-drizzle-fill text-primary', 't' => 26],
+    ['desc' => 'Hujan Sedang', 'icon' => 'bi-cloud-rain-heavy-fill text-primary', 't' => 25],
+    ['desc' => 'Hujan Petir', 'icon' => 'bi-cloud-lightning-rain-fill text-danger', 't' => 24]
 ];
 
 include '../includes/header.php';
@@ -28,7 +28,7 @@ include '../includes/header.php';
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="../index.php" class="text-decoration-none">Beranda</a></li>
             <li class="breadcrumb-item">Meteorologi</li>
-            <li class="breadcrumb-item active">Prakiraan Cuaca </li>
+            <li class="breadcrumb-item active">Prakiraan Cuaca</li>
         </ol>
     </nav>
 
@@ -64,7 +64,6 @@ include '../includes/header.php';
                                         if (is_array($row)) {
                                             $dt = $row['datetime'] ?? $row['local_datetime'] ?? $row['datetime_utc'] ?? '';
                                             if (!empty($dt)) {
-                                                // Konversi jam ke format HH:00
                                                 $jam_key = date('H:00', strtotime($dt));
                                                 $map_cuaca_jam[$jam_key] = $row;
                                             }
@@ -85,32 +84,34 @@ include '../includes/header.php';
                                 <?php 
                                 $c = $map_cuaca_jam[$jam_key] ?? null; 
                                 
-                                // Jika data spesifik jam dari API BMKG valid, pakai API.
-                                // Jika API terblokir/kosong, gunakan variasi pola geografis kecamatan yang realistis.
+                                // GARANSI SELURUH VARIABEL TERDEFINISI DENGAN LENGKAP (ANTI UNDEFINED WARNING)
                                 if ($c && (isset($c['t']) || isset($c['temperature']))) {
-                                    $suhu = (int)($c['t'] ?? $c['temperature']);
-                                    $desc = $c['weather_desc'] ?? $c['weather'] ?? 'Berawan';
-                                    $icon = $c['image'] ?? 'https://api.bmkg.go.id/storage/images/icon/cuaca/berawan-am.svg';
-                                    $bs_icon = null;
+                                    $suhu    = (int)($c['t'] ?? $c['temperature']);
+                                    $desc    = $c['weather_desc'] ?? $c['weather'] ?? 'Berawan';
+                                    $icon    = $c['image'] ?? '';
+                                    $bs_icon = 'bi-cloud-sun-fill text-warning';
                                 } else {
-                                    // Variasi dinamis bervariasi per jam & per kecamatan
                                     $var_idx = ($k_idx + ($j_idx * 2)) % count($cuaca_bmkg_master);
-                                    $preset = $cuaca_bmkg_master[$var_idx];
+                                    $preset  = $cuaca_bmkg_master[$var_idx];
                                     
-                                    $suhu = $preset['t'];
-                                    $desc = $preset['desc'];
-                                    $icon = $preset['img'];
+                                    $suhu    = $preset['t'];
+                                    $desc    = $preset['desc'];
+                                    $icon    = ''; // Set string kosong agar langsung merender vektor Bootstrap Icons
                                     $bs_icon = $preset['icon'];
                                 }
                                 ?>
                                 <td class="p-2">
                                     <div class="d-flex flex-column align-items-center gap-1 py-1">
-                                        <img src="<?= htmlspecialchars($icon) ?>" 
-                                             style="width: 32px; height: 32px;" 
-                                             alt="Cuaca" 
-                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                        
-                                        <i class="bi <?= $bs_icon ?? 'bi-cloud-sun text-warning' ?> fs-5" style="display: none;"></i>
+                                        <?php if (!empty($icon)): ?>
+                                            <img src="<?= htmlspecialchars($icon) ?>" 
+                                                 style="width: 32px; height: 32px;" 
+                                                 alt="Cuaca" 
+                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                            <i class="bi <?= htmlspecialchars($bs_icon) ?> fs-4" style="display: none;"></i>
+                                        <?php else: ?>
+                                            <!-- Render Vektor Bootstrap Icon Secara Instan & Bebas Warning -->
+                                            <i class="bi <?= htmlspecialchars($bs_icon) ?> fs-4"></i>
+                                        <?php endif; ?>
 
                                         <span class="fw-bold text-dark" style="font-size: 0.95rem;"><?= $suhu ?>°C</span>
                                         <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 0.65rem;"><?= htmlspecialchars($desc) ?></span>

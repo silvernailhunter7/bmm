@@ -158,6 +158,9 @@ $page_title = "Kelola Analisis Iklim Semesteran - Panel Admin";
                         <a class="nav-link" href="berita_kelola.php"><i class="bi bi-newspaper me-2"></i> Kelola Berita</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="iklim_10.php"><i class="bi bi-calendar2 me-2"></i> Analisis Iklim Dasarian</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link active" href="iklim_kelola.php"><i class="bi bi-calendar3 me-2"></i> Analisis Iklim Semester</a>
                     </li>
                 </ul>

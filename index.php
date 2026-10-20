@@ -5,18 +5,19 @@ require_once 'includes/api_gempa.php';
 $page_title = "BMKG Gorontalo - Portal Resmi";
 
 // Fetch Master ADM4 Gorontalo untuk Filter Cuaca
-$master_adm4 = get_master_adm4_gorontalo();
+$master_adm4 = get_master_adm4_gorontalo();$data_cuaca  = get_bmkg_cuaca_gorontalo();
 
-// Grouping Kabupaten/Kota & Kecamatan
-$kabupaten_list = [];
+// 2. Susun Struktur Hierarchy untuk Dropdown (Kabupaten -> Kecamatan -> ADM4)
+$dropdown_data = [];
 foreach ($master_adm4 as$item) {
-    $kab =$item['kab'];
-    $kec =$item['kec'];
-    $code =$item['adm4'];
-    if (!isset($kabupaten_list[$kab])) {
-        $kabupaten_list[$kab] = [];
+    $kab  =$item['kab'];
+    $kec  =$item['kec'];
+    $adm4 =$item['adm4'];
+    
+    if (!isset($dropdown_data[$kab])) {
+        $dropdown_data[$kab] = [];
     }
-    $kabupaten_list[$kab][] = ['kec' => $kec, 'adm4' =>$code];
+    $dropdown_data[$kab][$kec] =$adm4;
 }
 
 // Fetch Berita Utama
@@ -32,6 +33,41 @@ $gempa_terkini = get_bmkg_gempa('autogempa');$g_mag       = !empty($gempa_terkin
 $g_tgl       = !empty($gempa_terkini['Tanggal']) ? $gempa_terkini['Tanggal'] : date('d M Y');$g_jam       = !empty($gempa_terkini['Jam']) ?$gempa_terkini['Jam'] : '12:44:23 WITA';
 $g_kedalaman = !empty($gempa_terkini['Kedalaman']) ? $gempa_terkini['Kedalaman'] : '10 km';$g_wilayah   = !empty($gempa_terkini['Wilayah']) ?$gempa_terkini['Wilayah'] : 'Gorontalo dan sekitarnya';
 $g_potensi   = !empty($gempa_terkini['Potensi']) ? $gempa_terkini['Potensi'] : 'Tidak berpotensi Tsunami';$g_shakemap  = !empty($gempa_terkini['Shakemap']) ?$gempa_terkini['Shakemap'] : '';
+
+// Masukkan URL Video YouTube resmi di sini
+$youtube_url = "https://www.youtube.com/embed/aCwY-XoBTsg?si=QDxDq7NSxVIj12Lq";
+
+// Fungsi Pembersih URL YouTube Anti-Error 153
+function get_youtube_embed_url_clean($url) {
+    $video_id = '';
+    
+    // Murni mengekstrak 11 karakter ID Video saja (misal: aCwY-XoBTsg)
+    if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $url, $matches)) {
+        $video_id = $matches[1];
+    }
+    
+    if ($video_id) {
+        // Gabungkan murni dengan parameter embed standar tanpa ?si=
+        return "https://www.youtube.com/embed/" . $video_id . "?rel=0&enablejsapi=1";
+    }
+    
+    return "https://www.youtube.com/embed/aCwY-XoBTsg?rel=0";
+}
+
+$embed_src = get_youtube_embed_url_clean($youtube_url);
+
+// ATUR TAUTAN NAVIGASI LAYANAN DI SINI (DAPAT DIUBAH SESUAI KEBUTUHAN)
+$layanan_links = [
+    'cuaca'         => 'pages/cuaca_harian.php',
+    'bandara'       => 'pages/cuaca_penerbangan.php',
+    'maritim'       => 'pages/cuaca_pelabuhan.php',
+    'iklim'         => 'pages/iklim_10.php',
+    'kualitas_udara'=> 'pages/kualitas_udara.php',
+    'siaran_pers'   => 'pages/siaran_pers.php',
+    'pelayanan_data'=> 'pages/pelayanan.php',
+    'transparansi'  => 'pages/transparansi.php',
+    'pengaduan'     => 'pages/pengaduan.php',
+];
 
 include 'includes/header.php';
 ?>
@@ -54,35 +90,48 @@ include 'includes/header.php';
     }
 
     /* QUICK MENU OVAL INTERAKTIF */
-    .quick-card-interactive {
-        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        border: 1px solid #e2e8f0 !important;
-        background: #ffffff;
-    }
-    .quick-card-interactive .oval-bg {
-        width: 90%;
-        height: 48px;
-        border-radius: 50px;
+ <style>
+    .layanan-wrapper {
+        max-width: 1000px;
         margin: 0 auto;
+    }
+    .layanan-item {
+        text-decoration: none !important;
+        color: #1e293b;
+        transition: transform 0.2s ease, color 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .layanan-item:hover {
+        transform: translateY(-5px);
+        color: #0284c7;
+    }
+    .icon-circle {
+        width: 68px;
+        height: 68px;
+        border-radius: 50%;
+        background-color: #f1f5f9;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.35s ease;
+        font-size: 1.6rem;
+        color: #1e293b;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        transition: background-color 0.2s ease, color 0.2s ease;
     }
-    .quick-card-interactive .oval-icon {
-        transition: transform 0.3s ease;
+    .layanan-item:hover .icon-circle {
+        background-color: #e0f2fe;
+        color: #0284c7;
     }
-    .quick-card-interactive:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 12px 20px -5px rgba(2, 132, 199, 0.15) !important;
-        border-color: #0284c7 !important;
-    }
-    .quick-card-interactive:hover .oval-bg {
-        width: 100%;
-        height: 54px;
-    }
-    .quick-card-interactive:hover .oval-icon {
-        transform: scale(1.25) rotate(5deg);
+    .layanan-title {
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-align: center;
+        line-height: 1.3;
+        color: #334155;
     }
 </style>
 
@@ -102,42 +151,50 @@ include 'includes/header.php';
     </div>
 </div>
 
-    <!-- 2. HERO BANNER UTAMA -->
-    <div class="card border-0 rounded-4 overflow-hidden mb-4 shadow-sm" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff;">
-        <div class="card-body p-4 p-lg-5">
-            <div class="row align-items-center g-4">
-                <div class="col-lg-8">
-                    <span class="badge bg-white text-primary fw-bold px-3 py-1.5 rounded-pill mb-3 shadow-sm" style="font-size: 0.78rem;">
-                        <i class="bi bi-shield-check text-primary me-1"></i> Pelayanan Terpadu Satu Pintu (PTSP)
-                    </span>
-                    <h2 class="fw-bold text-white mb-2 fs-3 fs-lg-2">
-                        Akses Informasi Meteorologi & Geofisika Gorontalo
-                    </h2>
-                    <p class="text-white-50 mb-4" style="font-size: 0.95rem; max-width: 680px;">
-                        Layanan resmi informasi prakiraan cuaca, analisis iklim dasarian, mitigasi gempabumi, dan permohonan data BMKG terintegrasi.
-                    </p>
-                    <div class="d-flex flex-wrap gap-2.5">
-                        <a href="pages/cuaca_harian.php" class="btn btn-warning rounded-pill px-4 py-2 fw-bold text-dark shadow-sm">
-                            <i class="bi bi-search me-1.5"></i> Cek Cuaca Kecamatan
-                        </a>
-                        <a href="pages/ptsp.php" class="btn btn-light rounded-pill px-4 py-2 fw-semibold text-primary shadow-sm">
-                            <i class="bi bi-file-earmark-text-fill me-1.5"></i> Permintaan Data Resmi
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-4 text-center d-none d-lg-block">
-                    <img src="https://www.bmkg.go.id/asset/img/logo/logo-bmkg.png" 
-                         class="img-fluid drop-shadow opacity-75" 
-                         style="max-height: 140px; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));" 
-                         alt="Logo BMKG Portal">
-                </div>
+    <!-- HERO BANNER PTSP DENGAN EMBED VIDEO YOUTUBE -->
+<div class="card border-0 rounded-4 p-4 p-md-5 mb-5 text-white shadow-sm" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);">
+    <div class="row align-items-center g-4">
+        
+        <!-- TEKS DAN TOMBOL PTSP -->
+        <div class="col-lg-7">
+            <span class="badge bg-white text-primary rounded-pill px-3 py-1.5 mb-3 fw-semibold shadow-sm" style="font-size: 0.8rem;">
+                <i class="bi bi-shield-check me-1"></i> Pelayanan Terpadu Satu Pintu (PTSP)
+            </span>
+            <h2 class="fw-bold mb-3 display-6" style="line-height: 1.2;">
+                Akses Informasi Meteorologi & Geofisika Gorontalo
+            </h2>
+            <p class="mb-4 text-white-50" style="font-size: 0.96rem; max-width: 600px; line-height: 1.6;">
+                Layanan resmi informasi prakiraan cuaca, analisis iklim dasarian, mitigasi gempabumi, dan permohonan data BMKG terintegrasi.
+            </p>
+            <div class="d-flex flex-wrap gap-2.5">
+                <a href="#container-hasil-cuaca" class="btn btn-warning rounded-pill px-4 py-2.5 fw-bold text-dark shadow-sm">
+                    <i class="bi bi-search me-1.5"></i> Cek Cuaca Kecamatan
+                </a>
+                <a href="pages/pelayanan_data.php" class="btn btn-light rounded-pill px-4 py-2.5 fw-bold text-primary shadow-sm">
+                    <i class="bi bi-file-earmark-text me-1.5"></i> Permintaan Data Resmi
+                </a>
             </div>
         </div>
+
+        <!-- EMBED VIDEO YOUTUBE (LENGKAP DENGAN REFERRERPOLICY UNTUK MENCEGAH ERROR 153) -->
+        <div class="col-lg-5">
+            <div class="ratio ratio-16x9 rounded-4 overflow-hidden shadow-lg border border-2 border-white border-opacity-25">
+                <iframe 
+                    src="<?= htmlspecialchars($embed_src) ?>" 
+                    title="Video Profil BMKG" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+
     </div>
+</div>
 
     <!-- 3. QUICK MENU INTERAKTIF -->
     <div class="row g-3 mb-5">
-        <div class="col-6 col-md-3">
+        <div class="col-6 col-md-4">
             <a href="pages/cuaca_harian.php" class="card quick-card-interactive h-100 rounded-4 shadow-sm text-decoration-none p-3 text-center">
                 <div class="oval-bg bg-primary-subtle mb-2">
                     <i class="bi bi-clock-history fs-3 text-primary oval-icon"></i>
@@ -146,16 +203,7 @@ include 'includes/header.php';
                 <small class="text-muted" style="font-size: 0.75rem;">Detail per-Kecamatan</small>
             </a>
         </div>
-        <div class="col-6 col-md-3">
-            <a href="pages/citra_satelit.php" class="card quick-card-interactive h-100 rounded-4 shadow-sm text-decoration-none p-3 text-center">
-                <div class="oval-bg bg-info-subtle mb-2">
-                    <i class="bi bi-globe-americas fs-3 text-info oval-icon"></i>
-                </div>
-                <span class="fw-bold text-dark d-block mb-0" style="font-size: 0.9rem;">Satelit Himawari-9</span>
-                <small class="text-muted" style="font-size: 0.75rem;">Animasi Liputan Awan</small>
-            </a>
-        </div>
-        <div class="col-6 col-md-3">
+        <div class="col-6 col-md-4">
             <a href="pages/gempa_terkini.php" class="card quick-card-interactive h-100 rounded-4 shadow-sm text-decoration-none p-3 text-center">
                 <div class="oval-bg bg-danger-subtle mb-2">
                     <i class="bi bi-activity fs-3 text-danger oval-icon"></i>
@@ -164,8 +212,8 @@ include 'includes/header.php';
                 <small class="text-muted" style="font-size: 0.75rem;">Shakemap & Parameter</small>
             </a>
         </div>
-        <div class="col-6 col-md-3">
-            <a href="pages/iklim_dasarian.php" class="card quick-card-interactive h-100 rounded-4 shadow-sm text-decoration-none p-3 text-center">
+        <div class="col-6 col-md-4">
+            <a href="pages/iklim_10.php" class="card quick-card-interactive h-100 rounded-4 shadow-sm text-decoration-none p-3 text-center">
                 <div class="oval-bg bg-success-subtle mb-2">
                     <i class="bi bi-calendar3 fs-3 text-success oval-icon"></i>
                 </div>
@@ -175,50 +223,46 @@ include 'includes/header.php';
         </div>
     </div>
 
-<!-- SECTION PRAKIRAAN CUACA INTERAKTIF KECAMATAN -->
-<div class="mb-5">
-    
-    <!-- BARIS ATAS: JUDUL & DROPDOWN FILTER HORIZONTAL -->
-    <div class="row align-items-center g-3 mb-4">
-        <div class="col-lg-5">
-            <h3 class="fw-bold text-dark mb-1">Prakiraan Cuaca</h3>
-            <p class="text-muted small mb-0">Pilih wilayah administrasi untuk detail prakiraan per jam</p>
+<!-- SECTION PRAKIRAAN CUACA KECAMATAN -->
+<div class="card card-modern p-4 border rounded-4 shadow-sm bg-white mb-5" id="container-hasil-cuaca">
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-4 gap-3">
+        <div>
+            <h4 class="fw-bold text-dark mb-1">
+                <i class="bi bi-cloud-sun text-primary me-2"></i>Prakiraan Cuaca
+            </h4>
+            <p class="text-muted small mb-0">Pilih wilayah administrasi untuk detail prakiraan cuaca per jam di Provinsi Gorontalo</p>
         </div>
-        
-        <div class="col-lg-7">
-            <!-- DROPDOWN FILTER HORIZONTAL -->
-            <div class="row g-2 align-items-center">
-                <div class="col-12 col-sm-4">
-                    <select id="select-kabupaten" class="form-select rounded-pill shadow-sm w-100" style="font-size: 0.88rem;">
-                        <option value="">-- Pilih Kab/Kota --</option>
-                        <?php foreach ($kabupaten_list as $kab => $kec_items): ?>
-                            <option value="<?= htmlspecialchars($kab) ?>"><?= htmlspecialchars($kab) ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
 
-                <div class="col-12 col-sm-4">
-                    <select id="select-kecamatan" class="form-select rounded-pill shadow-sm w-100" style="font-size: 0.88rem;" disabled>
-                        <option value="">-- Pilih Kecamatan --</option>
-                    </select>
-                </div>
+        <!-- DROPDOWN FILTER WILAYAH (BERDERET HORIZONTAL) -->
+        <div class="d-flex flex-row align-items-center gap-2 flex-wrap flex-lg-nowrap">
+            <select id="select-kabupaten" class="form-select form-select-sm rounded-pill px-3" style="min-width: 180px;">
+                <option value="">-- Pilih Kab/Kota --</option>
+                <?php foreach ($dropdown_data as $kab_nama =>$kec_list): ?>
+                    <option value="<?= htmlspecialchars($kab_nama) ?>"><?= htmlspecialchars($kab_nama) ?></option>
+                <?php endforeach; ?>
+            </select>
 
-                <div class="col-12 col-sm-4">
-                    <select id="select-desa" class="form-select rounded-pill shadow-sm w-100" style="font-size: 0.88rem;" disabled>
-                        <option value="">-- Semua Desa --</option>
-                    </select>
-                </div>
-            </div>
+            <select id="select-kecamatan" class="form-select form-select-sm rounded-pill px-3" style="min-width: 180px;" disabled>
+                <option value="">-- Pilih Kecamatan --</option>
+            </select>
+
+            <select id="select-desa" class="form-select form-select-sm rounded-pill px-3" style="min-width: 180px;" disabled>
+                <option value="">-- Semua Desa --</option>
+            </select>
         </div>
     </div>
 
-    <!-- WADAH DISPLAY HASIL CUACA (TEPAT DI BAWAH / FULL WIDTH) -->
-    <div id="container-hasil-cuaca" class="border rounded-4 p-4 text-center bg-white shadow-sm w-100" style="border-style: dashed !important;">
-        <p class="text-muted mb-0" style="font-size: 0.92rem;">
-            Tidak ada data cuaca untuk lokasi atau tanggal ini. Silakan pilih wilayah pada dropdown di atas.
-        </p>
-    </div>
+    <!-- AREA TAMPILAN HASIL PRAKIRAAN CUACA -->
+    <div id="weather-content-area"></div>
+</div>
 
+    <!-- AREA TAMPILAN HASIL PRAKIRAAN CUACA -->
+    <div id="weather-content-area">
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary mb-2" role="status"></div>
+            <p class="text-muted small mb-0">Memuat prakiraan cuaca wilayah Gorontalo...</p>
+        </div>
+    </div>
 </div>
 
     <!-- 5. ROW SEJAJAR: BERITA & GEMPA TERKINI -->
@@ -301,7 +345,7 @@ include 'includes/header.php';
                                  referrerpolicy="no-referrer"
                                  class="img-fluid rounded-2" 
                                  alt="Peta Shakemap BMKG"
-                                 style="max-height: 220px; width: auto; object-fit: contain;">
+                                 style="max-height: 220px; max-width: 1800px; object-fit: contain;">
                         </div>
 
                         <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
@@ -338,118 +382,307 @@ include 'includes/header.php';
                 </div>
             </div>
         </div>
+<div class="container my-5 py-3">
+    <div class="layanan-wrapper">
+        <!-- JUDUL HEADER SECTION -->
+        <div class="text-center mb-4">
+            <h3 class="fw-bold text-dark mb-1">Layanan Lainnya</h3>
+            <p class="text-muted small mb-0">Akses terintegrasi untuk seluruh layanan meteorologi, klimatologi, dan publik</p>
+        </div>
 
+        <!-- GRID LAYANAN (TEKS BERADA DI BAWAH VEKTOR) -->
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-3 g-4 justify-content-center text-center">
+            
+            <!-- 1. Cuaca Kab & Kec -->
+            <div class="col">
+                <a href="<?= htmlspecialchars($layanan_links['cuaca']) ?>" class="layanan-item">
+                    <div class="icon-circle">
+                        <i class="bi bi-cloud-drizzle"></i>
+                    </div>
+                    <span class="layanan-title">Cuaca Kab & Kec</span>
+                </a>
+            </div>
+
+            <!-- 2. Cuaca Bandara -->
+            <div class="col">
+                <a href="<?= htmlspecialchars($layanan_links['bandara']) ?>" class="layanan-item">
+                    <div class="icon-circle">
+                        <i class="bi bi-thermometer-sun"></i>
+                    </div>
+                    <span class="layanan-title">Cuaca Bandara</span>
+                </a>
+            </div>
+
+            <!-- 3. Cuaca Maritim -->
+            <div class="col">
+                <a href="<?= htmlspecialchars($layanan_links['maritim']) ?>" class="layanan-item">
+                    <div class="icon-circle">
+                        <i class="bi bi-water"></i>
+                    </div>
+                    <span class="layanan-title">Cuaca Maritim</span>
+                </a>
+            </div>
+
+            <!-- 4. Informasi Iklim -->
+            <div class="col">
+                <a href="<?= htmlspecialchars($layanan_links['iklim']) ?>" class="layanan-item">
+                    <div class="icon-circle">
+                        <i class="bi bi-calendar-event"></i>
+                    </div>
+                    <span class="layanan-title">Informasi Iklim</span>
+                </a>
+            </div>
+
+            <!-- 5. Kualitas Udara -->
+            <div class="col">
+                <a href="<?= htmlspecialchars($layanan_links['kualitas_udara']) ?>" class="layanan-item">
+                    <div class="icon-circle">
+                        <i class="bi bi-droplet"></i>
+                    </div>
+                    <span class="layanan-title">Kualitas Udara</span>
+                </a>
+            </div>
+
+            <!-- 6. Siaran Pers -->
+            <div class="col">
+                <a href="<?= htmlspecialchars($layanan_links['siaran_pers']) ?>" class="layanan-item">
+                    <div class="icon-circle">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
+                    <span class="layanan-title">Siaran Pers</span>
+                </a>
+            </div>
+
+            <!-- 7. Pelayanan Data -->
+            <div class="col">
+                <a href="<?= htmlspecialchars($layanan_links['pelayanan']) ?>" class="layanan-item">
+                    <div class="icon-circle">
+                        <i class="bi bi-database"></i>
+                    </div>
+                    <span class="layanan-title">Pelayanan Data</span>
+                </a>
+            </div>
+
+            <!-- 8. Transparansi Kinerja -->
+            <div class="col">
+                <a href="<?= htmlspecialchars($layanan_links['transparansi']) ?>" class="layanan-item">
+                    <div class="icon-circle">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <span class="layanan-title">Transparansi Kinerja</span>
+                </a>
+            </div>
+
+            <!-- 9. Pengaduan & WBS -->
+            <div class="col">
+                <a href="<?= htmlspecialchars($layanan_links['pengaduan']) ?>" class="layanan-item">
+                    <div class="icon-circle">
+                        <i class="bi bi-shield-exclamation"></i>
+                    </div>
+                    <span class="layanan-title">Pengaduan</span>
+                </a>
+            </div>
+
+        </div>
     </div>
 </div>
 
 <!-- JAVASCRIPT DINAMIS DROPDOWN KABUPATEN/KECAMATAN -->
 <script>
-    const dataKabupaten = <?= json_encode($kabupaten_list) ?>;
+document.addEventListener("DOMContentLoaded", function () {
+    const dropdownData = <?= json_encode($dropdown_data) ?>;
+    const allCuacaData = <?= json_encode($data_cuaca) ?>;
 
-    const selectKab = document.getElementById('select-kabupaten');
-    const selectKec = document.getElementById('select-kecamatan');
-    const selectDesa = document.getElementById('select-desa');
-    const containerCuaca = document.getElementById('container-hasil-cuaca');
+    const selectKab   = document.getElementById("select-kabupaten");
+    const selectKec   = document.getElementById("select-kecamatan");
+    const selectDesa  = document.getElementById("select-desa");
+    const contentArea = document.getElementById("weather-content-area");
 
-    selectKab.addEventListener('change', function() {
-        const valKab = this.value;
+    const defaultKecamatan = ["Kota Barat", "Limboto", "Tilamuta", "Marisa", "Kwandang", "Suwawa"];
+
+    // FUNGSI RENDER VEKTOR IKON SESUAI DENGAN DESKRIPSI KONDISI & SUHU
+    function renderWeatherVector(cInfo) {
+        if (cInfo && cInfo.icon && cInfo.icon.trim() !== '') {
+            return `<i class="bi ${cInfo.icon} display-6"></i>`;
+        }
+        
+        // Mapping Vektor Otomatis Berdasarkan Teks Kondisi
+        const k = (cInfo && cInfo.kondisi) ? cInfo.kondisi.toLowerCase() : '';
+        
+        if (k.includes('petir')) {
+            return `<i class="bi bi-cloud-lightning-rain-fill text-danger display-6"></i>`;
+        } else if (k.includes('hujan sedang') || k.includes('hujan lebat')) {
+            return `<i class="bi bi-cloud-rain-heavy-fill text-primary display-6"></i>`;
+        } else if (k.includes('hujan')) {
+            return `<i class="bi bi-cloud-drizzle-fill text-primary display-6"></i>`;
+        } else if (k.includes('berawan')) {
+            return `<i class="bi bi-cloud-sun-fill text-warning display-6"></i>`;
+        } else if (k.includes('cerah')) {
+            return `<i class="bi bi-sun-fill text-warning display-6"></i>`;
+        }
+        
+        return `<i class="bi bi-cloud-sun-fill text-warning display-6"></i>`;
+    }
+
+    // 1. EVENT KABUPATEN CHANGED
+    selectKab.addEventListener("change", function () {
+        const kabSelected = this.value;
         selectKec.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
         selectDesa.innerHTML = '<option value="">-- Semua Desa --</option>';
         selectDesa.disabled = true;
 
-        if (valKab && dataKabupaten[valKab]) {
+        if (kabSelected && dropdownData[kabSelected]) {
             selectKec.disabled = false;
-            dataKabupaten[valKab].forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = item.adm4;
-                opt.textContent = item.kec;
+            for (let kecNama in dropdownData[kabSelected]) {
+                let opt = document.createElement("option");
+                opt.value = dropdownData[kabSelected][kecNama];
+                opt.dataset.nama = kecNama;
+                opt.textContent = kecNama;
                 selectKec.appendChild(opt);
-            });
+            }
+            renderKabupatenView(kabSelected);
         } else {
             selectKec.disabled = true;
-            containerCuaca.innerHTML = '<p class="text-muted mb-0" style="font-size: 0.92rem;">Tidak ada data cuaca untuk lokasi atau tanggal ini.</p>';
+            loadDefaultWeather();
         }
     });
 
-    selectKec.addEventListener('change', function() {
+    // 2. EVENT KECAMATAN CHANGED
+    selectKec.addEventListener("change", function () {
         const adm4Code = this.value;
-        const nameKec = this.options[this.selectedIndex].text;
+        const selectedOpt = this.options[this.selectedIndex];
+        const kecNama = selectedOpt ? selectedOpt.dataset.nama : '';
+
+        selectDesa.innerHTML = '<option value="">-- Semua Desa --</option>';
 
         if (adm4Code) {
             selectDesa.disabled = false;
-            containerCuaca.innerHTML = `
-                <div class="d-flex justify-content-center align-items-center py-4">
-                    <div class="spinner-border text-primary me-2" role="status"></div>
-                    <span class="text-muted fw-semibold">Mengambil Prakiraan Cuaca BMKG untuk ${nameKec}...</span>
+            let opt = document.createElement("option");
+            opt.value = adm4Code;
+            opt.textContent = "Kel./Desa " + kecNama;
+            selectDesa.appendChild(opt);
+
+            renderDetailCuacaJam(adm4Code, kecNama);
+        } else {
+            selectDesa.disabled = true;
+            if (selectKab.value) renderKabupatenView(selectKab.value);
+        }
+    });
+
+    // 3. EVENT DESA CHANGED
+    selectDesa.addEventListener("change", function () {
+        const adm4Code = this.value;
+        if (adm4Code) {
+            const label = this.options[this.selectedIndex].text;
+            renderDetailCuacaJam(adm4Code, label);
+        }
+    });
+
+    function loadDefaultWeather() {
+        const filtered = allCuacaData.filter(item => defaultKecamatan.includes(item.kecamatan));
+        renderCardGrid(filtered, "Prakiraan Cuaca Wilayah Utama Gorontalo Hari Ini:");
+    }
+
+    function renderKabupatenView(kabNama) {
+        const filtered = allCuacaData.filter(item => item.kabupaten === kabNama);
+        renderCardGrid(filtered, "Prakiraan Cuaca Kecamatan di " + kabNama + ":");
+    }
+
+    // RENDER CARD GRID DENGAN VEKTOR ICON PRESISI
+    function renderCardGrid(listData, titleLabel) {
+        if (!listData || listData.length === 0) {
+            contentArea.innerHTML = `<div class="alert alert-warning rounded-4">Data cuaca tidak ditemukan.</div>`;
+            return;
+        }
+
+        let cardsHtml = listData.map(item => {
+            const firstJam = Object.keys(item.cuaca)[0];
+            const cInfo = item.cuaca[firstJam] || {};
+            const vectorIcon = renderWeatherVector(cInfo);
+
+            return `
+                <div class="col-md-6 col-lg-4">
+                    <div class="card border rounded-4 shadow-sm p-3 bg-light h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="fw-bold text-dark mb-0">${item.kecamatan}</h6>
+                            <small class="text-muted" style="font-size:0.72rem;">${item.kabupaten}</small>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                    ${vectorIcon}
+                                </div>
+                                <div>
+                                    <h4 class="fw-bold mb-0 text-dark">${cInfo.suhu || '28'}&deg;C</h4>
+                                    <small class="text-secondary fw-semibold" style="font-size: 0.8rem;">${cInfo.kondisi || 'Cerah Berawan'}</small>
+                                </div>
+                            </div>
+                            <button onclick="triggerSelectKec('${item.adm4}')" class="btn btn-outline-primary btn-sm rounded-pill px-2.5 py-1" style="font-size: 0.72rem;">
+                                Detail <i class="bi bi-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             `;
+        }).join('');
 
-            // Simulasi Render Data Prakiraan Cuaca
-            setTimeout(() => {
-                containerCuaca.innerHTML = `
-                    <div class="text-start">
-                        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
-                            <h6 class="fw-bold text-dark mb-0"><i class="bi bi-geo-alt-fill text-primary me-1"></i> Prakiraan Cuaca ${nameKec}</h6>
-                            <a href="pages/cuaca_harian.php?adm4=${adm4Code}" class="btn btn-primary btn-sm rounded-pill px-3">Detail Selengkapnya</a>
-                        </div>
-                        <div class="row g-2 text-center">
-                            <div class="col-4 col-md-2">
-                                <div class="p-2 border rounded bg-light">
-                                    <small class="text-muted d-block" style="font-size: 0.72rem;">08.00 WITA</small>
-                                    <i class="bi bi-sun fs-3 text-warning my-1 d-block"></i>
-                                    <span class="fw-bold small d-block">Cerah</span>
-                                    <small class="text-primary fw-semibold">28°C</small>
-                                </div>
+        contentArea.innerHTML = `
+            <div class="mb-3">
+                <small class="fw-bold text-muted uppercase tracking-wider">
+                    <i class="bi bi-geo-alt-fill text-danger me-1"></i>${titleLabel}
+                </small>
+            </div>
+            <div class="row g-3">${cardsHtml}</div>
+        `;
+    }
+
+    // RENDER DETAIL PER JAM
+    function renderDetailCuacaJam(adm4Code, locationLabel) {
+        const targetData = allCuacaData.find(item => item.adm4 === adm4Code);
+
+        if (targetData && targetData.cuaca) {
+            let itemsHtml = Object.entries(targetData.cuaca).map(([jam, c]) => {
+                const vectorIcon = renderWeatherVector(c);
+                return `
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="border rounded-4 p-3 text-center bg-light h-100">
+                            <small class="text-muted d-block mb-1">${jam}</small>
+                            <div class="my-2 d-flex align-items-center justify-content-center" style="height: 48px;">
+                                ${vectorIcon}
                             </div>
-                            <div class="col-4 col-md-2">
-                                <div class="p-2 border rounded bg-light">
-                                    <small class="text-muted d-block" style="font-size: 0.72rem;">11.00 WITA</small>
-                                    <i class="bi bi-cloud-sun fs-3 text-warning my-1 d-block"></i>
-                                    <span class="fw-bold small d-block">Cerah Berawan</span>
-                                    <small class="text-primary fw-semibold">31°C</small>
-                                </div>
-                            </div>
-                            <div class="col-4 col-md-2">
-                                <div class="p-2 border rounded bg-light">
-                                    <small class="text-muted d-block" style="font-size: 0.72rem;">14.00 WITA</small>
-                                    <i class="bi bi-cloud-rain fs-3 text-info my-1 d-block"></i>
-                                    <span class="fw-bold small d-block">Hujan Ringan</span>
-                                    <small class="text-primary fw-semibold">29°C</small>
-                                </div>
-                            </div>
-                            <div class="col-4 col-md-2">
-                                <div class="p-2 border rounded bg-light">
-                                    <small class="text-muted d-block" style="font-size: 0.72rem;">17.00 WITA</small>
-                                    <i class="bi bi-cloud fs-3 text-secondary my-1 d-block"></i>
-                                    <span class="fw-bold small d-block">Berawan</span>
-                                    <small class="text-primary fw-semibold">27°C</small>
-                                </div>
-                            </div>
-                            <div class="col-4 col-md-2">
-                                <div class="p-2 border rounded bg-light">
-                                    <small class="text-muted d-block" style="font-size: 0.72rem;">20.00 WITA</small>
-                                    <i class="bi bi-moon-stars fs-3 text-indigo my-1 d-block"></i>
-                                    <span class="fw-bold small d-block">Cerah Berawan</span>
-                                    <small class="text-primary fw-semibold">25°C</small>
-                                </div>
-                            </div>
-                            <div class="col-4 col-md-2">
-                                <div class="p-2 border rounded bg-light">
-                                    <small class="text-muted d-block" style="font-size: 0.72rem;">23.00 WITA</small>
-                                    <i class="bi bi-cloud-moon fs-3 text-indigo my-1 d-block"></i>
-                                    <span class="fw-bold small d-block">Berawan</span>
-                                    <small class="text-primary fw-semibold">24°C</small>
-                                </div>
-                            </div>
+                            <h5 class="fw-bold mb-0 text-dark">${c.suhu}&deg;C</h5>
+                            <small class="text-secondary d-block mt-1" style="font-size:0.75rem; line-height: 1.2;">${c.kondisi}</small>
                         </div>
                     </div>
                 `;
-            }, 500);
+            }).join('');
+
+            contentArea.innerHTML = `
+                <div class="alert alert-info rounded-4 d-flex align-items-center gap-2 mb-3 py-2 px-3">
+                    <i class="bi bi-geo-alt-fill fs-5"></i>
+                    <span class="fw-semibold">Detail Prakiraan Per Jam untuk: <strong>${locationLabel}</strong></span>
+                </div>
+                <div class="row g-2.5">${itemsHtml}</div>
+            `;
         } else {
-            selectDesa.disabled = true;
-            containerCuaca.innerHTML = '<p class="text-muted mb-0" style="font-size: 0.92rem;">Tidak ada data cuaca untuk lokasi atau tanggal ini.</p>';
+            contentArea.innerHTML = `<div class="alert alert-warning rounded-4">Detail cuaca belum tersedia.</div>`;
         }
-    });
+    }
+
+    window.triggerSelectKec = function(adm4Code) {
+        const item = allCuacaData.find(i => i.adm4 === adm4Code);
+        if (item) {
+            selectKab.value = item.kabupaten;
+            selectKab.dispatchEvent(new Event('change'));
+            setTimeout(() => {
+                selectKec.value = adm4Code;
+                selectKec.dispatchEvent(new Event('change'));
+            }, 50);
+        }
+    };
+
+    loadDefaultWeather();
+});
     
     document.addEventListener("DOMContentLoaded", function() {
         fetch('includes/proxy_warning.php')

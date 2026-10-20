@@ -20,9 +20,9 @@ include '../includes/header.php';
         <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-3 gap-2 px-1">
             <div>
                 <h4 class="fw-bold mb-1 text-slate-800">
-                    <i class="bi bi-broadcast text-primary me-2"></i>Citra Radar Cuaca Gorontalo (CMAX Sidarma)
+                    <i class="bi bi-broadcast text-primary me-2"></i>Citra Radar Cuaca Gorontalo
                 </h4>
-                <p class="text-muted small mb-0">Deteksi dini intensitas hujan dan pergerakan sel awan Cumulonimbus (CB) secara presisi.</p>
+                <p class="text-muted small mb-0">Deteksi dini intensitas hujan dan pergerakan awan Cumulonimbus (CB).</p>
             </div>
             <button onclick="location.reload();" class="btn btn-primary rounded-pill px-3 btn-sm align-self-start align-self-md-auto">
                 <i class="bi bi-arrow-clockwise me-1"></i> Update Radar BMKG
@@ -43,31 +43,58 @@ include '../includes/header.php';
                 </div>
             </div>
 
-            <!-- KOLOM KANAN: KETERANGAN INTENSITAS (PORSI 3/12) -->
-            <div class="col-lg-3 col-xl-3 d-flex">
-                <div class="card border bg-light p-3 rounded-3 w-100 d-flex flex-column justify-content-between">
-                    <div>
-                        <h6 class="fw-bold text-dark mb-3" style="font-size: 0.9rem;">Keterangan Intensitas Hujan (dBZ):</h6>
-                        <ul class="list-unstyled small d-flex flex-column gap-2.5 mb-0" style="font-size: 0.82rem;">
-                            <li class="p-2 bg-white rounded border d-flex align-items-center justify-content-between">
-                                <span class="badge bg-info text-dark px-2 py-1">Light Blue</span>
-                                <span class="text-muted fw-semibold">15 - 25 dBZ<br><small>(Hujan Ringan)</small></span>
-                            </li>
-                            <li class="p-2 bg-white rounded border d-flex align-items-center justify-content-between">
-                                <span class="badge bg-primary px-2 py-1">Blue/Green</span>
-                                <span class="text-muted fw-semibold">25 - 35 dBZ<br><small>(Hujan Sedang)</small></span>
-                            </li>
-                            <li class="p-2 bg-white rounded border d-flex align-items-center justify-content-between">
-                                <span class="badge bg-warning text-dark px-2 py-1">Yellow/Orange</span>
-                                <span class="text-muted fw-semibold">35 - 45 dBZ<br><small>(Hujan Lebat)</small></span>
-                            </li>
-                            <li class="p-2 bg-white rounded border d-flex align-items-center justify-content-between">
-                                <span class="badge bg-danger px-2 py-1">Red/Purple</span>
-                                <span class="text-muted fw-semibold">&gt; 45 dBZ<br><small>(Sangat Lebat/Es)</small></span>
-                            </li>
-                        </ul>
+            <!-- KOLOM KANAN: LEGEND INTENSITAS & BUBBLE DESKRIPSI RADAR -->
+                <div class="col-lg-4 col-xl-3 d-flex flex-column justify-content-between">
+                    <div class="bg-white p-3 rounded-3 shadow-sm border h-100 d-flex flex-column justify-content-between">
+                        
+                        <div>
+                            <!-- KETERANGAN INTENSITAS dBZ -->
+                            <h6 class="fw-bold text-dark mb-3" style="font-size: 0.9rem;">Keterangan Intensitas Hujan (dBZ):</h6>
+                            
+                            <div class="d-flex flex-column gap-2 mb-4">
+                                <div class="d-flex align-items-center justify-content-between p-2 rounded-3 border bg-light">
+                                    <span class="badge bg-info text-dark">Light Blue</span>
+                                    <span class="small text-muted fw-semibold">15 - 25 dBZ <br><small>(Hujan Ringan)</small></span>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between p-2 rounded-3 border bg-light">
+                                    <span class="badge bg-primary">Blue/Green</span>
+                                    <span class="small text-muted fw-semibold">25 - 35 dBZ <br><small>(Hujan Sedang)</small></span>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between p-2 rounded-3 border bg-light">
+                                    <span class="badge bg-warning text-dark">Yellow/Orange</span>
+                                    <span class="small text-muted fw-semibold">35 - 45 dBZ <br><small>(Hujan Lebat)</small></span>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between p-2 rounded-3 border bg-light">
+                                    <span class="badge bg-danger">Red/Purple</span>
+                                    <span class="small text-muted fw-semibold">> 45 dBZ <br><small>(Sangat Lebat/Es)</small></span>
+                                </div>
+                            </div>
+
+                            <!-- BUBBLE DESKRIPSI RADAR GORONTALO -->
+                            <div class="p-3 rounded-4 border-0 shadow-sm" style="background-color: #f0f9ff; border-left: 4px solid #0284c7 !important;">
+                                <div class="d-flex align-items-center gap-2 mb-2 text-primary">
+                                    <i class="bi bi-info-circle-fill fs-5"></i>
+                                    <strong style="font-size: 0.88rem;">Tentang Radar Cuaca</strong>
+                                </div>
+                                <p class="text-secondary mb-0" style="font-size: 0.82rem; line-height: 1.5; text-align: justify;">
+                                    Radar Cuaca Sidarma memantau pembentukan awan konvektif dan intensitas curah hujan secara real-time di wilayah Provinsi Gorontalo dan sekitarnya. Produk <strong>CMAX (Column Max)</strong> menampilkan reflektivitas maksimum per kolom atmosfer untuk mendeteksi potensi cuaca ekstrem, angin kencang, dan hujan es secara dini.
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="mt-3 pt-2 border-top text-center">
-                        <small class="text-muted d-block mb-1" style="font-size: 0.72rem;">Format: CMAX Animasi</small>
-                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.
+                </div>
+
+            </div>
+        </div>
+
+        <!-- TOMBOL KEMBALI -->
+        <div>
+            <a href="../index.php" class="btn btn-outline-secondary rounded-pill btn-sm px-4">
+                <i class="bi bi-arrow-left me-1"></i> Kembali ke Beranda
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<?php include '../includes/footer.php'; ?>

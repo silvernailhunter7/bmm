@@ -57,6 +57,10 @@ $page_title = "Panel Admin BMKG Gorontalo";
                     <!-- MENU KLIMATOLOGI (Dapat diakses oleh admin_klima, klimatologi, admin_klimatologi, dan all) -->
                     <?php if (strpos($admin_role, 'klima') !== false || $admin_role === 'all'): ?>
                         <li class="nav-item">
+                            <a class="nav-link text-info fw-semibold" href="iklim_10.php">
+                                <i class="bi bi-calendar3 me-2"></i> Analisis Iklim Dasarian
+                            </a>
+                        </li><li class="nav-item">
                             <a class="nav-link text-info fw-semibold" href="iklim_kelola.php">
                                 <i class="bi bi-calendar3 me-2"></i> Analisis Iklim Semester
                             </a>

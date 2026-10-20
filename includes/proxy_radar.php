@@ -3,14 +3,14 @@ error_reporting(0);
 set_time_limit(8);
 
 // Endpoint Resmi Radar CMAX BMKG Gorontalo
-$primary_url = "http://cuaca.bmkg.go.id/data/public/sidarma/ANIMASI/CMAX_Gorontalo.gif";
+$primary_url = "https://cuaca.bmkg.go.id/data/public/ANIMASI/CMAX_Gorontalo.gif";
 
 function fetch_radar_cmax($url, $timeout = 5) {
     if (!function_exists('curl_init')) {
         $ctx = stream_context_create([
             "http" => [
                 "timeout" => $timeout,
-                "header"  => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)\r\nReferer: http://cuaca.bmkg.go.id/\r\n"
+                "header"  => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)\r\nReferer: https://cuaca.bmkg.go.id/\r\n"
             ],
             "ssl" => ["verify_peer" => false, "verify_peer_name" => false]
         ]);

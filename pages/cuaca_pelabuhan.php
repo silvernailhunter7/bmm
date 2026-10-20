@@ -33,6 +33,7 @@ include '../includes/header.php';
                     <i class="bi bi-tsunami text-info me-2"></i>Informasi Cuaca Pelabuhan & Maritim
                 </h3>
                 <p class="text-muted small mb-0">Rilis visual prakiraan cuaca maritim dan pelabuhan wilayah Provinsi Gorontalo.</p>
+                <p class="text-muted small mb-0">Untuk informasi selengkapnya bisa menuju tautan : <a href="<?php echo "https://www.bmkg.go.id/cuaca/maritim/pelabuhan"; ?>" target="_blank"><?php echo "BMKG Maritim"; ?></a></p>
             </div>
             <a href="cuaca_penerbangan.php" class="btn btn-outline-primary rounded-pill btn-sm px-3">
                 <i class="bi bi-airplane me-1"></i> Lihat Cuaca Penerbangan
