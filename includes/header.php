@@ -190,7 +190,7 @@ $base_url = $is_subpage ? '../' : '';
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">PELAYANAN DATA</a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="<?= $base_url ?>pages/ptsp.php">Alur Pelayanan Data (PTSP)</a></li>
-                        <li><a class="dropdown-item" href="#">Permohonan Informasi MKG</a></li>
+                        <li><a class="dropdown-item" href="<?= $base_url ?>pages/permintaan.php">Permohonan Informasi MKG</a></li>
                         <li><a class="dropdown-item" href="<?= $base_url ?>pages/pnbp.php">Tarif PNBP Data BMKG</a></li>
                     </ul>
                 </li>
@@ -198,10 +198,10 @@ $base_url = $is_subpage ? '../' : '';
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">PUBLIK</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Survei IKM & SKM <i class="bi bi-box-arrow-up-right ms-1 text-muted" style="font-size:0.75rem;"></i></a></li>
+                        <li><a class="dropdown-item" href="<?= $base_url ?>pages/survey.php">Survei IKM & SKM <i class="bi bi-box-arrow-up-right ms-1 text-muted" style="font-size:0.75rem;"></i></a></li>
                         <li><a class="dropdown-item" href="#">Hasil IKM dan SKM <i class="bi bi-box-arrow-up-right ms-1 text-muted" style="font-size:0.75rem;"></i></a></li>
-                        <li><a class="dropdown-item" href="#">Kritik dan Saran</a></li>
-                        <li><a class="dropdown-item" href="#">Pengaduan</a></li>
+                        <li><a class="dropdown-item" href="<?= $base_url ?>pages/kritik.php">Kritik dan Saran</a></li>
+                        <li><a class="dropdown-item" href="<?= $base_url ?>pages/pengaduan.php">Pengaduan</a></li>
                         <li><a class="dropdown-item" href="<?= $base_url ?>pages/transparansi.php">Transparansi</a></li>
                     </ul>
                 </li>
